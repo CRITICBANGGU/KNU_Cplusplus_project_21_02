@@ -12,6 +12,10 @@ using namespace std;
 
 //===================실습 2====================
 //5주차 & 6주차 : 클래스 선언 및 사용
+
+//===================실습 3====================
+//7주차 & 8주차 &9주차 : 연개 클래스 선언 및 사용(멤버변수로 사용)
+
 void first_screan() {
 	char orderType;
 	cout << "=========Mc Donalds==========" << endl;
@@ -31,12 +35,43 @@ char menu_screen() {
 	return menu;
 }
 
+class Result {
+public:
+	vector <string> order_list;
+	void push_list(string menu) {
+		order_list.push_back(menu);
+	}
+	//함수 오버로딩
+	void result(string onlyorder) {
+		cout << "=======주문내역입니다=======\n";
+		cout << onlyorder;
+	}
+
+	//벡터사용
+	void result(vector<string>& list) {
+
+		cout << "=======주문내역입니다=======\n";
+		for (string b : list) {
+			cout << b << "/\n";
+		}
+	}
+	//void result_screen(string side) {
+	//	cout << "=======주문내역입니다=======\n"
+	//		<< " 사이드메뉴 :" << side;
+	//}
+};
+
 //클래스 선언
 class Order {
 	string beef[ARR_SIZE] = { "1955버거","베이컨 토마토 디럭스","빅맥","불고기 버거","더블 쿼터 파운더치즈" };
 	string chicken[ARR_SIZE] = { "맥스파이시 상하이 버거","슈니언 버거","맥치킨 모짜렐라","슈비버거","슈슈버거" };
 	string side[ARR_SIZE] = { "후렌치 후라이", "스낵랩","애플파이","콜라", "스프라이트" };
+	
 public:
+	//클래스 멤버변수 사용
+	Result result;
+	vector <string> order_list;
+
 	//난수 사용(랜덤메뉴)
 	string Rand_menu() {
 		int rand_type_ch[ARR_SIZE] = { -1,-1,-1,-1,-1 };
@@ -62,9 +97,11 @@ public:
 		}
 		cin >> num;
 		if (rand_type_ch[num - 1] == 1) {
+			result.push_list(beef[rand_menu_ch[num - 1]]);
 			return beef[rand_menu_ch[num - 1]];
 		}
 		else {
+			result.push_list(chicken[rand_menu_ch[num - 1]]);
 			return chicken[rand_menu_ch[num - 1]];
 		}
 	}
@@ -76,6 +113,7 @@ public:
 		}
 		cout << endl;
 		cin >> num;
+		result.push_list(beef[num - 1]);
 		return beef[num - 1];
 	}
 
@@ -86,6 +124,7 @@ public:
 		}
 		cout << endl;
 		cin >> num;
+		result.push_list(chicken[num - 1]);
 		return chicken[num - 1];
 	}
 
@@ -96,6 +135,7 @@ public:
 		}
 		cout << endl;
 		cin >> num;
+		result.push_list(side[num - 1]);
 		return side[num - 1];
 	}
 
@@ -108,94 +148,85 @@ public:
 };
 
 
-//함수 오버로딩
-void result(string onlyorder) {
-	cout << "=======주문내역입니다=======\n";
-	cout << onlyorder;
-}
-
-//벡터사용
-void result(vector<string>& list) {
-
-	cout << "=======주문내역입니다=======\n";
-	for (string b : list) {
-		cout << b << "/\n";
-	}
-}
-//void result_screen(string side) {
-//	cout << "=======주문내역입니다=======\n"
-//		<< " 사이드메뉴 :" << side;
-//}
-
-int main() {
-	//클래스 객체선언
-	Order order;
+class Init {
+public:
 	char menu_type;
 	char continue_order = 'y';
 	string main_menu = "";
 	string side_menu = "";
-	vector <string> order_list;
+
+	//함수 오버로딩
+	void init() {
+		continue_order = 'y';
+		main_menu = "";
+		side_menu = "";
+	}
+	void init(char y) {
+		main_menu = "+";
+		side_menu = "+";
+	}
+};
+
+int main() {
+	//클래스 객체선언
+	Order order;
+	Result result;
+	Init init;
+
+	init.init();
 	first_screan();
-	menu_type = menu_screen();
-	while (continue_order == 'y')
+	init.menu_type = menu_screen();
+	while (init.continue_order == 'y')
 	{
-		switch (menu_type)
+		switch (init.menu_type)
 		{
 		case '1':
-			main_menu = order.Rand_menu();
-			cout << main_menu;
-			order_list.push_back(main_menu);
-			continue_order = order.add_order();
-			if (continue_order == 'y') {
-				menu_type = menu_screen();
-				main_menu = "+";
-				side_menu = "+";
+			init.main_menu = order.Rand_menu();
+			cout << init.main_menu << endl;
+			init.continue_order = order.add_order();
+			if (init.continue_order == 'y') {
+				init.menu_type = menu_screen();
+				init.init(init.continue_order);
 			}
 			break;
 		case '2':
-			main_menu = order.Beef_menu();
-			cout << main_menu;
-			order_list.push_back(main_menu);
-			continue_order = order.add_order();
-			if (continue_order == 'y') {
-				menu_type = menu_screen();
-				main_menu = "+";
-				side_menu = "+";
+			init.main_menu = order.Beef_menu();
+			cout << init.main_menu << endl;
+			init.continue_order = order.add_order();
+			if (init.continue_order == 'y') {
+				init.menu_type = menu_screen();
+				init.init(init.continue_order);
 			}
 			break;
 		case '3':
-			main_menu = order.Chicken_menu();
-			cout << main_menu;
-			order_list.push_back(main_menu);
-			continue_order = order.add_order();
-			if (continue_order == 'y') {
-				menu_type = menu_screen();
-				main_menu = "+";
-				side_menu = "+";
+			init.main_menu = order.Chicken_menu();
+			cout << init.main_menu<<endl;
+			init.continue_order = order.add_order();
+			if (init.continue_order == 'y') {
+				init.menu_type = menu_screen();
+				init.init(init.continue_order);
 			}
 			break;
 		case '4':
-			side_menu = order.Side_menu();
-			cout << side_menu;
-			order_list.push_back(side_menu);
-			continue_order = order.add_order();
-			if (continue_order == 'y') {
-				menu_type = menu_screen();
-				main_menu = "+";
-				side_menu = "+";
+			init.side_menu = order.Side_menu();
+			cout << init.side_menu << endl;
+			init.continue_order = order.add_order();
+			if (init.continue_order == 'y') {
+				init.menu_type = menu_screen();
+				init.init(init.continue_order);
 			}
 			break;
 		default:
 			break;
 		}
 	}
-	if (main_menu == "") {
-		result(side_menu);
+	if (init.main_menu == "") {
+		result.result(init.side_menu);
 	}
-	else if (side_menu == "") {
-		result(main_menu);
+	else if (init.side_menu == "") {
+		result.result(init.main_menu);
 	}
 	else {
-		result(order_list);
+		result.result(order.result.order_list);
 	}
 }
