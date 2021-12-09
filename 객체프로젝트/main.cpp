@@ -10,7 +10,8 @@ using namespace std;
 //3주차 : 참조자
 //4주차 : 벡터
 
-
+//===================실습 2====================
+//5주차 & 6주차 : 클래스 선언 및 사용
 void first_screan() {
 	char orderType;
 	cout << "=========Mc Donalds==========" << endl;
@@ -30,79 +31,81 @@ char menu_screen() {
 	return menu;
 }
 
-//난수 사용(랜덤메뉴)
-string Rand_menu() {
+//클래스 선언
+class Order {
 	string beef[ARR_SIZE] = { "1955버거","베이컨 토마토 디럭스","빅맥","불고기 버거","더블 쿼터 파운더치즈" };
 	string chicken[ARR_SIZE] = { "맥스파이시 상하이 버거","슈니언 버거","맥치킨 모짜렐라","슈비버거","슈슈버거" };
-	int rand_type_ch[ARR_SIZE] = { -1,-1,-1,-1,-1 };
-	int rand_menu_ch[ARR_SIZE] = { 0, };
-	char ch_rand_num = 5;
-	char ch;
-	int num;
-	for (int n = 0; n < ch_rand_num; n++) {
-		char rand_num = rand() % ARR_SIZE;
+	string side[ARR_SIZE] = { "후렌치 후라이", "스낵랩","애플파이","콜라", "스프라이트" };
+public:
+	//난수 사용(랜덤메뉴)
+	string Rand_menu() {
+		int rand_type_ch[ARR_SIZE] = { -1,-1,-1,-1,-1 };
+		int rand_menu_ch[ARR_SIZE] = { 0, };
+		char ch_rand_num = 5;
+		char ch;
+		int num;
+		for (int n = 0; n < ch_rand_num; n++) {
+			char rand_num = rand() % ARR_SIZE;
 
-		if (rand_num % 2 == 0) {
-			ch = rand_num;
-			cout << n + 1 << ". " << beef[rand_num] << endl;
-			rand_type_ch[n] = 1;
-			rand_menu_ch[n] = rand_num;
+			if (rand_num % 2 == 0) {
+				ch = rand_num;
+				cout << n + 1 << ". " << beef[rand_num] << endl;
+				rand_type_ch[n] = 1;
+				rand_menu_ch[n] = rand_num;
+			}
+			else {
+				cout << n + 1 << ". " << chicken[rand_num] << endl;
+				rand_type_ch[n] = 0;
+				rand_menu_ch[n] = rand_num;
+			}
+
+		}
+		cin >> num;
+		if (rand_type_ch[num - 1] == 1) {
+			return beef[rand_menu_ch[num - 1]];
 		}
 		else {
-			cout << n + 1 << ". " << chicken[rand_num] << endl;
-			rand_type_ch[n] = 0;
-			rand_menu_ch[n] = rand_num;
+			return chicken[rand_menu_ch[num - 1]];
 		}
+	}
 
+	string Beef_menu() {
+		int num;
+		for (int n = 0; n < ARR_SIZE; n++) {
+			cout << n + 1 << ". " << beef[n] << ' ';
+		}
+		cout << endl;
+		cin >> num;
+		return beef[num - 1];
 	}
-	cin >> num;
-	if (rand_type_ch[num-1] == 1) {
-		return beef[rand_menu_ch[num-1]];
-	}
-	else {
-		return chicken[rand_menu_ch[num - 1]];
-	}
-}
 
-string Beef_menu() {
-	int num;
-	string beef[ARR_SIZE] = { "1955버거","베이컨 토마토 디럭스","빅맥","불고기 버거","더블 쿼터 파운더치즈" };
-	for (int n = 0; n < ARR_SIZE; n++) {
-		cout << n + 1 << ". " << beef[n] << ' ';
+	string Chicken_menu() {
+		int num;
+		for (int n = 0; n < ARR_SIZE; n++) {
+			cout << n + 1 << ". " << chicken[n] << ' ';
+		}
+		cout << endl;
+		cin >> num;
+		return chicken[num - 1];
 	}
-	cout << endl;
-	cin >> num;
-	return beef[num-1];
-}
 
-string Chicken_menu() {
-	int num;
-	string chicken[ARR_SIZE] = { "맥스파이시 상하이 버거","슈니언 버거","맥치킨 모짜렐라","슈비버거","슈슈버거" };
-	for (int n = 0; n < ARR_SIZE; n++) {
-		cout << n + 1 << ". " << chicken[n] << ' ';
+	string Side_menu() {
+		int num;
+		for (int n = 0; n < ARR_SIZE; n++) {
+			cout << n + 1 << ". " << side[n] << ' ';
+		}
+		cout << endl;
+		cin >> num;
+		return side[num - 1];
 	}
-	cout << endl;
-	cin >> num;
-	return chicken[num - 1];
-}
 
-string Side_menu() {
-	int num; 
-	string side[ARR_SIZE] = { "후렌치 후라이", "스낵랩","애플파이","콜라", "스프라이트" };
-	for (int n = 0; n < ARR_SIZE; n++) {
-		cout << n + 1 << ". " << side[n] << ' ';
+	char add_order() {
+		char YN;
+		cout << "추가주문 하시겠습니까?(y/n) ";
+		cin >> YN;
+		return YN;
 	}
-	cout << endl;
-	cin >> num;
-	return side[num - 1];
-}
-
-char add_order() {
-	char YN;
-	cout << "추가주문 하시겠습니까?(y/n) ";
-	cin >> YN;
-	return YN;
-}
+};
 
 
 //함수 오버로딩
@@ -125,6 +128,8 @@ void result(vector<string>& list) {
 //}
 
 int main() {
+	//클래스 객체선언
+	Order order;
 	char menu_type;
 	char continue_order = 'y';
 	string main_menu = "";
@@ -137,10 +142,10 @@ int main() {
 		switch (menu_type)
 		{
 		case '1':
-			main_menu = Rand_menu();
+			main_menu = order.Rand_menu();
 			cout << main_menu;
 			order_list.push_back(main_menu);
-			continue_order = add_order();
+			continue_order = order.add_order();
 			if (continue_order == 'y') {
 				menu_type = menu_screen();
 				main_menu = "+";
@@ -148,10 +153,10 @@ int main() {
 			}
 			break;
 		case '2':
-			main_menu = Beef_menu();
+			main_menu = order.Beef_menu();
 			cout << main_menu;
 			order_list.push_back(main_menu);
-			continue_order = add_order();
+			continue_order = order.add_order();
 			if (continue_order == 'y') {
 				menu_type = menu_screen();
 				main_menu = "+";
@@ -159,10 +164,10 @@ int main() {
 			}
 			break;
 		case '3':
-			main_menu = Chicken_menu();
+			main_menu = order.Chicken_menu();
 			cout << main_menu;
 			order_list.push_back(main_menu);
-			continue_order = add_order();
+			continue_order = order.add_order();
 			if (continue_order == 'y') {
 				menu_type = menu_screen();
 				main_menu = "+";
@@ -170,10 +175,10 @@ int main() {
 			}
 			break;
 		case '4':
-			side_menu = Side_menu();
+			side_menu = order.Side_menu();
 			cout << side_menu;
 			order_list.push_back(side_menu);
-			continue_order = add_order();
+			continue_order = order.add_order();
 			if (continue_order == 'y') {
 				menu_type = menu_screen();
 				main_menu = "+";
