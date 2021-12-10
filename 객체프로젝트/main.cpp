@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
-#include <stdio.h>
+#include <string>
+#include <fstream>
 
 #define ARR_SIZE 5
 
@@ -21,6 +22,29 @@ using namespace std;
 //10주차 & 11주차 &12주차 : 클래스 객체에 대해 벡터형(line_116) & 
 //							포인터형(line_239) & 배열형(line_225,line_304) & 
 //							멤버변수 사용(line_118등) 총 4가지 ver  
+
+//===================실습 5====================
+//13주차 : 파일 읽기
+
+//파일 읽기 클래스 선언
+class Getfile {
+	ifstream inf;
+	string menu[3];
+public:
+	Getfile() :inf("menu.txt") {};
+	void dbRead() {
+		int i = 0;
+		while (!inf.eof())
+		{
+			getline(inf, menu[i]);
+			i++;
+		}
+	}
+	void display(int k) {
+		cout << menu[k - 1];
+	}
+};
+
 class Screen {
 public:
 	int first_screan() {
@@ -117,6 +141,8 @@ public:
 	vector <Result> result ;
 	//클래스 멤버변수 사용
 	vector <string> order_list;
+	
+	Getfile db;
 
 	//난수 사용(랜덤메뉴)
 	string Rand_menu(int k) {
@@ -153,11 +179,9 @@ public:
 	}
 
 	string Beef_menu(int k) {
+		db.dbRead();
+		db.display(1);
 		int num;
-		cout << result.size() << endl;
-		for (int n = 0; n < ARR_SIZE; n++) {
-			cout << n + 1 << ". " << beef[n] << ' ';
-		}
 		cout << endl;
 		cin >> num;
 		result.push_back(Result(beef[num - 1]));
@@ -165,10 +189,9 @@ public:
 	}
 
 	string Chicken_menu(int k) {
+		db.dbRead();
+		db.display(2);
 		int num;
-		for (int n = 0; n < ARR_SIZE; n++) {
-			cout << n + 1 << ". " << chicken[n] << ' ';
-		}
 		cout << endl;
 		cin >> num;
 		result.push_back(Result(chicken[num - 1]));
@@ -176,10 +199,9 @@ public:
 	}
 
 	string Side_menu(int k) {
+		db.dbRead();
+		db.display(3);
 		int num;
-		for (int n = 0; n < ARR_SIZE; n++) {
-			cout << n + 1 << ". " << side[n] << ' ';
-		}
 		cout << endl;
 		cin >> num;
 		result[k].push_list(side[num - 1]);
