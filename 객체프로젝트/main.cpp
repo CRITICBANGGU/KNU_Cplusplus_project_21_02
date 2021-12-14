@@ -1,8 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <vector>
 #include <string>
 #include <fstream>
-
+#include <ctime>
 #define ARR_SIZE 5
 
 using namespace std;
@@ -81,15 +82,15 @@ public:
 };
 
 class Result {
+	int i = 1;
 public:
 	Result() {}
-	Result(string name) {
-		push_list(name);
+	Result(vector <string> &list) {
+		this->order_list = list;
 	}
 	vector <string> order_list;
 	int num = 0;
-	void push_list(string menu) {
-		order_list.push_back(menu);
+	void push_list(vector <string>& list) {
 	}
 
 	//함수 오버로딩
@@ -97,20 +98,26 @@ public:
 		cout << "=======주문내역입니다=======\n";
 		cout << onlyorder;
 		num++;
+		onlyorder += "\n";
 		order_list.push_back(onlyorder);
-		order_list.push_back("\n");
+		//order_list.push_back("\n");
+		cout << "\n============================\n";
 	}
 
 	//벡터사용
 	void result(vector<string>& list) {
 
-		cout << "=======주문내역입니다=======\n";
+		cout << "\n=======주문내역입니다=======\n";
 		for (string b : list) {
 			cout << b << "/\n";
-			b += ' ';
+			//b += ' ';
 			order_list.push_back(b);
 		}
-		order_list.push_back("\n");
+		string laststring = (order_list.back())+"\n";
+		order_list.pop_back();
+		order_list.push_back(laststring);
+		cout << "\n==============================\n";
+		//order_list.push_back("\n");
 		num++;
 
 	}
@@ -121,8 +128,14 @@ public:
 			cout << *iter << " ";
 		}
 	}
-
-	void result_reset() {
+	void printVector(ofstream &out, string YMD,int i) {
+		
+		
+		out << ' ' << i+1 << ". ";
+		for (vector<string>::iterator iter = order_list.begin(); iter != order_list.end(); ++iter)
+		{	
+			out << *iter;
+		}
 	}
 	//void result_screen(string side) {
 	//	cout << "=======주문내역입니다=======\n"
@@ -138,12 +151,11 @@ class Order {
 	
 public:
 	//클래스 객체에 대한 벡터형 사용
-	vector <Result> result ;
+	vector <Result> result;
 	//클래스 멤버변수 사용
 	vector <string> order_list;
 	
-	Getfile db;
-
+	Getfile db; 
 	//난수 사용(랜덤메뉴)
 	string Rand_menu(int k) {
 		int rand_type_ch[ARR_SIZE] = { -1,-1,-1,-1,-1 };
@@ -169,11 +181,11 @@ public:
 		}
 		cin >> num;
 		if (rand_type_ch[num - 1] == 1) {
-			result.push_back(Result(beef[rand_menu_ch[num - 1]]));
+			order_list.push_back(beef[rand_menu_ch[num - 1]]);
 			return beef[rand_menu_ch[num - 1]];
 		}
 		else {
-			result.push_back(Result(chicken[rand_menu_ch[num - 1]]));
+			order_list.push_back(chicken[rand_menu_ch[num - 1]]);
 			return chicken[rand_menu_ch[num - 1]];
 		}
 	}
@@ -184,7 +196,7 @@ public:
 		int num;
 		cout << endl;
 		cin >> num;
-		result.push_back(Result(beef[num - 1]));
+		order_list.push_back(beef[num - 1]);
 		return beef[num - 1];
 	}
 
@@ -194,7 +206,7 @@ public:
 		int num;
 		cout << endl;
 		cin >> num;
-		result.push_back(Result(chicken[num - 1]));
+		order_list.push_back(chicken[num - 1]);
 		return chicken[num - 1];
 	}
 
@@ -204,7 +216,7 @@ public:
 		int num;
 		cout << endl;
 		cin >> num;
-		result[k].push_list(side[num - 1]);
+		order_list.push_back(side[num - 1]);
 		return side[num - 1];
 	}
 
@@ -212,11 +224,10 @@ public:
 		char YN;
 		cout << "추가주문 하시겠습니까?(y/n) ";
 		cin >> YN;
+		if (YN == 'n') {
+			result.push_back(Result(order_list));
+		}
 		return YN;
-	}
-
-	void add_newline(int k) {
-		result[k].push_list("\n");
 	}
 };
 
@@ -245,9 +256,10 @@ int main() {
 	//클래스 객체선언
 	Order order;
 	//클래스 객체에 대해 배열 선언
-	Result result[3];
+	Result result[100];
 	Init init;
-	Screen screen;
+	Screen screen; 
+	ofstream outf;
 	int num = 0;
 	int adminOrhereOrgo = 0;
 	char modify;
@@ -255,6 +267,7 @@ int main() {
 	while (true)
 	{
 		init.init();
+		
 		adminOrhereOrgo = screen.first_screan();
 		if (adminOrhereOrgo == 1122) {
 			cout << "관리자 모드 접속 성공\n";
@@ -266,19 +279,28 @@ int main() {
 				p->outvector();
 				p++;
 			}
-			/*cout << "수정하시겠습니까?(y/n)\n";
+			p -= num;
+			cout << "출력할까요?(y/n)\n";
 			cin >> modify;
 			if (modify == 'y') {
-				cout << "몇번째 수정하시겠습니까?\n";
-				cin >> num;
+				time_t tnow;
+				struct tm* t;
+				time(&tnow);
+				t = (struct tm*)localtime(&tnow);
+				int year = (t->tm_year) + 1900;
+				int month = (t->tm_mon) + 1;
+				int date = (t->tm_mday);
+				string YMD = to_string(year) + to_string(month) + to_string(date) + "_매출현황.txt";
+				ofstream outF(YMD);
 				for (int i = 0; i < num; i++) {
+					p->printVector(outF,YMD,i);
 					p++;
 				}
-
-			}*/
+			}
+			p -= num;
 		}
 		else {
-			init.menu_type = screen.menu_screen();
+			init.menu_type = screen.menu_screen(); 
 			while (init.continue_order == 'y')
 			{
 				switch (init.menu_type)
@@ -326,14 +348,17 @@ int main() {
 			//객체 배열 사용
 			if (init.main_menu == "") {
 				result[num].result(init.side_menu);
+				order.order_list.clear();
 			}
 			else if (init.side_menu == "") {
 				result[num].result(init.main_menu);
+				order.order_list.clear();
 			}
 			else {
-				result[num].result(order.result[num].order_list);
+				result[num].result(order.order_list);
+				order.order_list.clear();
 			}
-			order.add_newline(num);
+			//order.add_newline(num);
 			num++;
 		}
 	}
