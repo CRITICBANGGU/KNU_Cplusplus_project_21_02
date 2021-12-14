@@ -27,6 +27,9 @@ using namespace std;
 //===================실습 5====================
 //13주차 : 파일 읽기
 
+//===================실습 6====================
+//14주차 & 15주차 : 프로그램 수정 및 완성
+
 //파일 읽기 클래스 선언
 class Getfile {
 	ifstream inf;
@@ -67,17 +70,6 @@ public:
 		cin >> menu;
 
 		return menu;
-	}
-
-	void modify_screen() {
-		char modify;
-		int num;
-		cout << "수정하시겠습니까?(y/n)\n";
-		cin >> modify;
-		if (modify == 'y') {
-			cout << "몇번째 수정하시겠습니까?\n";
-			cin >> num;
-		}
 	}
 };
 
@@ -129,18 +121,12 @@ public:
 		}
 	}
 	void printVector(ofstream &out, string YMD,int i) {
-		
-		
 		out << ' ' << i+1 << ". ";
 		for (vector<string>::iterator iter = order_list.begin(); iter != order_list.end(); ++iter)
 		{	
 			out << *iter;
 		}
 	}
-	//void result_screen(string side) {
-	//	cout << "=======주문내역입니다=======\n"
-	//		<< " 사이드메뉴 :" << side;
-	//}
 };
 
 //클래스 선언
@@ -148,7 +134,6 @@ class Order {
 	string beef[ARR_SIZE] = { "1955버거","베이컨 토마토 디럭스","빅맥","불고기 버거","더블 쿼터 파운더치즈" };
 	string chicken[ARR_SIZE] = { "맥스파이시 상하이 버거","슈니언 버거","맥치킨 모짜렐라","슈비버거","슈슈버거" };
 	string side[ARR_SIZE] = { "후렌치 후라이", "스낵랩","애플파이","콜라", "스프라이트" };
-	
 public:
 	//클래스 객체에 대한 벡터형 사용
 	vector <Result> result;
@@ -177,7 +162,6 @@ public:
 				rand_type_ch[n] = 0;
 				rand_menu_ch[n] = rand_num;
 			}
-
 		}
 		cin >> num;
 		if (rand_type_ch[num - 1] == 1) {
@@ -296,6 +280,7 @@ int main() {
 					p->printVector(outF,YMD,i);
 					p++;
 				}
+				outF.close();
 			}
 			p -= num;
 		}
@@ -358,7 +343,6 @@ int main() {
 				result[num].result(order.order_list);
 				order.order_list.clear();
 			}
-			//order.add_newline(num);
 			num++;
 		}
 	}
